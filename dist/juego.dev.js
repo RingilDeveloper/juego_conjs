@@ -7,11 +7,11 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 /*   Variables  */
-var BT_INIT = document.getElementsByClassName("inicio");
-var YELLOW = document.getElementsByClassName("bot_color_yellow");
-var GREEN = document.getElementsByClassName("bot_color_green");
-var BLUE = document.getElementsByClassName("bot_color_blue");
-var ORANGE = document.getElementsByClassName("bot_color_orange");
+var BT_INIT = document.getElementById("init");
+var YELLOW = document.getElementById("amarillo");
+var GREEN = document.getElementById("verde");
+var BLUE = document.getElementById("azul");
+var ORANGE = document.getElementById("naranja");
 
 var Juego =
 /*#__PURE__*/
@@ -19,13 +19,88 @@ function () {
   function Juego() {
     _classCallCheck(this, Juego);
 
-    this.incializar();
+    this.inicializar();
+    this.generarSecuencia();
+    this.siguienteNivel();
   }
 
   _createClass(Juego, [{
-    key: "incializar",
-    value: function incializar() {
-      BT_INIT;
+    key: "inicializar",
+    value: function inicializar() {
+      BT_INIT.style.display = "none";
+      this.nivel = 5;
+      this.colores = {
+        YELLOW: YELLOW,
+        GREEN: GREEN,
+        BLUE: BLUE,
+        ORANGE: ORANGE
+      };
+    }
+  }, {
+    key: "generarSecuencia",
+    value: function generarSecuencia() {
+      this.secuencia = new Array(10).fill(0).map(function (n) {
+        return Math.floor(Math.random() * 4);
+      });
+    }
+  }, {
+    key: "siguienteNivel",
+    value: function siguienteNivel() {
+      this.iluminarSecuencia();
+    }
+  }, {
+    key: "transformarNumero",
+    value: function transformarNumero(num) {
+      switch (num) {
+        case 0:
+          return "YELLOW";
+
+        case 1:
+          return "GREEN";
+
+        case 2:
+          return "BLUE";
+
+        case 3:
+          return "ORANGE";
+      }
+    }
+  }, {
+    key: "iluminarSecuencia",
+    value: function iluminarSecuencia() {
+      var _this = this;
+
+      var _loop = function _loop(i) {
+        console.log(i);
+        console.log(_this.secuencia);
+
+        var color = _this.transformarNumero(_this.secuencia[i]);
+
+        _this.iluminarColor(color);
+
+        setTimeout(function () {
+          return _this.iluminarColor(color);
+        }, 1000 * i);
+      };
+
+      for (var i = 0; i <= this.nivel; i++) {
+        _loop(i);
+      }
+    }
+  }, {
+    key: "iluminarColor",
+    value: function iluminarColor(color) {
+      var _this2 = this;
+
+      this.colores[color].classList.add("ligth");
+      setTimeout(function () {
+        return _this2.apagarColor(color);
+      }, 400);
+    }
+  }, {
+    key: "apagarColor",
+    value: function apagarColor(color) {
+      this.colores[color].classList.remove("ligth");
     }
   }]);
 
@@ -33,5 +108,5 @@ function () {
 }();
 
 function iniciarJuego() {
-  var juego = new Juego();
+  window.juego = new Juego();
 }
