@@ -9,15 +9,28 @@
   <body>
     <section class="container">
       <section class="container-game">
-        <button id="azul" class="bot_color_blue" onclick=""></button>
-        <button id="verde" class="bot_color_green"></button>
-        <button id="amarillo" class="bot_color_yellow"></button>
-        <button id="naranja" class="bot_color_orange"></button>
+        <button id="azul" class="bot_color_blue" data-color="BLUE"></button>
+        <button id="verde" class="bot_color_green" data-color="GREEN"></button>
+        <button
+          id="amarillo"
+          class="bot_color_yellow"
+          data-color="YELLOW"
+        ></button>
+        <button
+          id="naranja"
+          class="bot_color_orange"
+          data-color="ORANGE"
+        ></button>
       </section>
       <button class="inicio" id="init" onclick="iniciarJuego()">
         Iniciar Juego
       </button>
     </section>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
+      integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA=="
+      crossorigin="anonymous"
+    ></script>
     <script src="juego.js"></script>
   </body>
 </html>

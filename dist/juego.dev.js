@@ -12,6 +12,7 @@ var YELLOW = document.getElementById("amarillo");
 var GREEN = document.getElementById("verde");
 var BLUE = document.getElementById("azul");
 var ORANGE = document.getElementById("naranja");
+var ULTIMO_NIVEL = 5;
 
 var Juego =
 /*#__PURE__*/
@@ -21,14 +22,17 @@ function () {
 
     this.inicializar();
     this.generarSecuencia();
-    this.siguienteNivel();
+    setTimeout(this.siguienteNivel(), 500);
   }
 
   _createClass(Juego, [{
     key: "inicializar",
     value: function inicializar() {
-      BT_INIT.style.display = "none";
-      this.nivel = 5;
+      this.inicializar = this.inicializar.bind(this);
+      this.siguienteNivel = this.siguienteNivel.bind(this);
+      this.elegirColor = this.elegirColor.bind(this);
+      this.toggleBtn();
+      this.nivel = 1;
       this.colores = {
         YELLOW: YELLOW,
         GREEN: GREEN,
@@ -37,16 +41,43 @@ function () {
       };
     }
   }, {
+    key: "toggleBtn",
+    value: function toggleBtn() {
+      if (BT_INIT.classList.contains("ocultar")) {
+        BT_INIT.classList.remove("ocultar");
+      } else {
+        BT_INIT.classList.add("ocultar");
+      }
+    }
+  }, {
     key: "generarSecuencia",
     value: function generarSecuencia() {
-      this.secuencia = new Array(10).fill(0).map(function (n) {
+      this.secuencia = new Array(ULTIMO_NIVEL).fill(0).map(function (n) {
         return Math.floor(Math.random() * 4);
       });
     }
   }, {
     key: "siguienteNivel",
     value: function siguienteNivel() {
+      this.subnivel = 0;
       this.iluminarSecuencia();
+      this.agrgarEventoClick();
+    }
+  }, {
+    key: "agrgarEventoClick",
+    value: function agrgarEventoClick() {
+      this.colores.BLUE.addEventListener("click", this.elegirColor);
+      this.colores.YELLOW.addEventListener("click", this.elegirColor);
+      this.colores.GREEN.addEventListener("click", this.elegirColor);
+      this.colores.ORANGE.addEventListener("click", this.elegirColor);
+    }
+  }, {
+    key: "elimarClick",
+    value: function elimarClick() {
+      this.colores.BLUE.removeEventListener("click", this.elegirColor);
+      this.colores.YELLOW.removeEventListener("click", this.elegirColor);
+      this.colores.GREEN.removeEventListener("click", this.elegirColor);
+      this.colores.ORANGE.removeEventListener("click", this.elegirColor);
     }
   }, {
     key: "transformarNumero",
@@ -66,35 +97,92 @@ function () {
       }
     }
   }, {
-    key: "iluminarSecuencia",
-    value: function iluminarSecuencia() {
+    key: "transformarColor",
+    value: function transformarColor(color) {
+      switch (color) {
+        case "YELLOW":
+          return 0;
+
+        case "GREEN":
+          return 1;
+
+        case "BLUE":
+          return 2;
+
+        case "ORANGE":
+          return 3;
+      }
+    }
+  }, {
+    key: "elegirColor",
+    value: function elegirColor(ev) {
+      var nombreColor = ev.target.dataset.color;
+      var numeroColor = this.transformarColor(nombreColor);
+      this.iluminarColor(nombreColor);
+
+      if (numeroColor === this.secuencia[this.subnivel]) {
+        this.subnivel++;
+
+        if (this.subnivel === this.nivel) {
+          this.nivel++;
+          swal("Platzi", "siguiente nivel", "success");
+          this.elimarClick();
+
+          if (this.nivel === ULTIMO_NIVEL + 1) {
+            this.ganoJuego();
+          } else {
+            setTimeout(this.siguienteNivel.bind(this), 2000);
+          }
+        }
+      } else {
+        this.perdioJuego();
+      }
+    }
+  }, {
+    key: "perdioJuego",
+    value: function perdioJuego() {
       var _this = this;
 
+      swal("Platzi", "Ohh! lo siento perdiste :(", "error").then(function () {
+        _this.elimarClick();
+
+        _this.inicializar();
+      });
+    }
+  }, {
+    key: "ganoJuego",
+    value: function ganoJuego() {
+      var _this2 = this;
+
+      swal("platzi", "Ganaste!", "success").then(function () {
+        _this2.inicializar();
+      });
+    }
+  }, {
+    key: "iluminarSecuencia",
+    value: function iluminarSecuencia() {
+      var _this3 = this;
+
       var _loop = function _loop(i) {
-        console.log(i);
-        console.log(_this.secuencia);
-
-        var color = _this.transformarNumero(_this.secuencia[i]);
-
-        _this.iluminarColor(color);
+        var color = _this3.transformarNumero(_this3.secuencia[i]);
 
         setTimeout(function () {
-          return _this.iluminarColor(color);
+          return _this3.iluminarColor(color);
         }, 1000 * i);
       };
 
-      for (var i = 0; i <= this.nivel; i++) {
+      for (var i = 0; i < this.nivel; i++) {
         _loop(i);
       }
     }
   }, {
     key: "iluminarColor",
     value: function iluminarColor(color) {
-      var _this2 = this;
+      var _this4 = this;
 
       this.colores[color].classList.add("ligth");
       setTimeout(function () {
-        return _this2.apagarColor(color);
+        return _this4.apagarColor(color);
       }, 400);
     }
   }, {
